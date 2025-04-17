@@ -5,7 +5,7 @@
 
 void encontrarMapa(TMapa *m, TPosicao *p, char c) {
 
-  //acha a posição do foge foge (tem como melhorar isso?)
+  //sempre tenho que percorrer a matriz inteira pra encontrar o herói, como melhorar isso?
   for(int i=0; i < m->linhas; i++) {
 
     for(int j=0; j < m->colunas; j++) {
@@ -27,7 +27,7 @@ void liberaMapa(TMapa *m) {
     free(m->matriz[i]);
   }
 
-  free(m->matriz);  //liberando memória usando 'free'
+  free(m->matriz);
 }
 
 void alocaMapa(TMapa *m) {
@@ -36,15 +36,15 @@ void alocaMapa(TMapa *m) {
 
   for(int i=0; i < m->linhas; i++) {
 
-    m->matriz[i] = malloc(sizeof(char) * m->colunas + 1);  
+    m->matriz[i] = malloc(sizeof(char) * m->colunas + 1);  // Aloca colunas (+1 para '\0')
   }
 }
 
 void lerMapa(TMapa *m) {
 
   FILE *f; //variável para manipular arquivos
-
-  f = fopen("C:\\Users\\Tommy Marques\\Desktop\\Marcos\\alura\\C\\pacMan.c\\mapa.txt", "r");
+  f = fopen("C:\\Users\\marco\\OneDrive\\Desktop\\Marcos\\alura\\C\\pacMan\\mapa.txt", "r");
+  
   if(!f) {  //verifica se o arquivo foi aberto corretamente
 
     printf("\n\nErro na leitura do mapa");

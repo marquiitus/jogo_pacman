@@ -2,7 +2,7 @@ typedef struct Mapa {
   char **matriz;  //'ponteiro para ponteiro'
   int linhas;
   int colunas;
-} TMapa;  //'Tipo Mapa'
+} TMapa;
 
 void lerMapa(TMapa *m);
 void imprimeMapa(TMapa *m);

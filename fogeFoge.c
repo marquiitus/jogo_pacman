@@ -11,14 +11,14 @@ TPosicao heroi;
 int main() {
 
   lerMapa(&m);
-  encontrarMapa(&m, &heroi, '@');
+  encontrarMapa(&m, &heroi, '@');  //encontra a posição do herói
 
   do {
 
     imprimeMapa(&m);
 
     char comando;
-    scanf(" %c", &comando);  //não esquecer do espaço antes do %c
+    scanf(" %c", &comando);
     
     move(comando);
 
@@ -29,33 +29,46 @@ int main() {
   return 0;
 }
 
-//Funções
+//*************** FUNÇÕES ***************
 void move(char direcao) {
 
-  m.matriz[heroi.x][heroi.y] = '.';
+  //começando a validar a entrada do usuário
+  if(direcao!='a' && direcao!='w' &&
+     direcao!='d' && direcao!='s')
+     return; 
 
-  switch (direcao) {  //dependendo da direção escolhida, o herói irá andar
+  int proximoX = heroi.x;
+  int proximoY = heroi.y;
+
+  switch (direcao) {
 
     case 'a':
-      m.matriz[heroi.x][heroi.y-1] = '@';
-      heroi.y--;
+      proximoY--;
       break;
     case 'w':
-      m.matriz[heroi.x-1][heroi.y] = '@';
-      heroi.x--;
+      proximoX--;
       break;
     case 's':
-      m.matriz[heroi.x+1][heroi.y] = '@';
-      heroi.x++;
+      proximoX++;
       break;
     case 'd':
-      m.matriz[heroi.x][heroi.y+1] = '@';
-      heroi.y++;
+      proximoY++;
       break;
   }
+
+  if(proximoX>=m.linhas||  //se for além do número de linhas e colunas do programa
+     proximoY>=m.colunas)
+  return;
+
+  if(m.matriz[proximoX][proximoY] != '.')
+    return;
+  
+  m.matriz[proximoX][proximoY] = '@';
+  m.matriz[heroi.x][heroi.y] = '.';
+  heroi.x = proximoX;
+  heroi.y = proximoY;
 }
 
 int acabou() {
-  
   return 0;
 }

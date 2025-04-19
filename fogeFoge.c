@@ -1,4 +1,3 @@
-//importação de bibliotecas
 #include <stdio.h>
 #include <stdlib.h>
 #include "fogeFoge.h"
@@ -8,10 +7,10 @@
 TMapa m;
 TPosicao heroi;
 
-int main() {
+int main(void) {
 
-  lerMapa(&m);
-  encontrarMapa(&m, &heroi, '@');  //encontra a posição do herói
+  leMapa(&m);
+  encontraMapa(&m, &heroi, HEROI);  //encontra a posição do herói
 
   do {
 
@@ -21,52 +20,72 @@ int main() {
     scanf(" %c", &comando);
     
     move(comando);
+    fantasmas();
 
   } while(!acabou());
 
   liberaMapa(&m);
-
-  return 0;
 }
 
 //*************** FUNÇÕES ***************
-void move(char direcao) {
+int validarDirecao(char direcao) {
 
-  //começando a validar a entrada do usuário
-  if(direcao!='a' && direcao!='w' &&
-     direcao!='d' && direcao!='s')
-     return; 
+  return (direcao==ESQUERDA || direcao==CIMA || direcao==BAIXO || direcao==DIREITA); 
+}
+
+void move(char direcao) {
 
   int proximoX = heroi.x;
   int proximoY = heroi.y;
 
+  //começando a validar a entrada do usuário
+  if(!validarDirecao(direcao)) 
+    return;
+
   switch (direcao) {
 
-    case 'a':
+    case ESQUERDA:
       proximoY--;
       break;
-    case 'w':
+    case CIMA:
       proximoX--;
       break;
-    case 's':
+    case BAIXO:
       proximoX++;
       break;
-    case 'd':
+    case DIREITA:
       proximoY++;
       break;
   }
 
-  if(proximoX>=m.linhas||  //se for além do número de linhas e colunas do programa
-     proximoY>=m.colunas)
-  return;
+  if(!validaMapa(&m, proximoX, proximoY))
+    return;
 
-  if(m.matriz[proximoX][proximoY] != '.')
+  if(!validaPosicao(&m, proximoX, proximoY))
     return;
   
-  m.matriz[proximoX][proximoY] = '@';
-  m.matriz[heroi.x][heroi.y] = '.';
+  andaNoMapa(&m, heroi.x, heroi.y, proximoX, proximoY);
   heroi.x = proximoX;
   heroi.y = proximoY;
+}
+
+void fantasmas() {
+
+  TMapa copia;
+  copiaMapa(&m, &copia);
+
+  for(int i=0; i<m.linhas; i++) {
+    for(int j=0; j<m.colunas; j++) {
+
+      if(copia.matriz[i][j] == FANTASMA) {
+      
+        if(validaMapa(&m, i, j+1) && validaPosicao(&m, i, j+1))
+          andaNoMapa(&m, i, j, i, j+1);
+      }
+    }
+  }
+
+  liberaMapa(&copia);
 }
 
 int acabou() {

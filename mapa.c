@@ -34,6 +34,10 @@ int validaPosicao(TMapa *m, int x, int y) {
   return m->matriz[x][y] == VAZIO;
 }
 
+int podeAndar(TMapa *m, int x, int y) {
+  return validaMapa(m, x, y) && validaPosicao(m, x, y);
+}
+
 void encontraMapa(TMapa *m, TPosicao *p, char c) {
 
   //sempre tenho que percorrer a matriz inteira pra encontrar o herói, como melhorar isso?

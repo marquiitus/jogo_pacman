@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "fogeFoge.h"
 #include "mapa.c"
 
@@ -58,10 +59,7 @@ void move(char direcao) {
       break;
   }
 
-  if(!validaMapa(&m, proximoX, proximoY))
-    return;
-
-  if(!validaPosicao(&m, proximoX, proximoY))
+  if(!podeAndar(&m, proximoX, proximoY))
     return;
   
   andaNoMapa(&m, heroi.x, heroi.y, proximoX, proximoY);
@@ -79,13 +77,43 @@ void fantasmas() {
 
       if(copia.matriz[i][j] == FANTASMA) {
       
-        if(validaMapa(&m, i, j+1) && validaPosicao(&m, i, j+1))
-          andaNoMapa(&m, i, j, i, j+1);
+        int xDestino, yDestino;
+        int encontrou = praOndeFantasmaVai(i, j, &xDestino, &yDestino);
+
+        if(encontrou) {
+
+          andaNoMapa(&m, i, j, xDestino, yDestino);
+        }
       }
     }
   }
 
   liberaMapa(&copia);
+}
+
+int praOndeFantasmaVai(int xOrigem, int yOrigem, int *xDestino, int *yDestino) {
+
+  int opcoes[4][2] = {
+    {xOrigem, yOrigem+1},
+    {xOrigem+1, yOrigem},
+    {xOrigem, yOrigem-1},
+    {xOrigem-1, yOrigem}
+  };
+
+  srand(time(0));
+  for(int i=0; i<10; i++) {
+
+    int posicao = rand()%4;
+    if(podeAndar(&m, opcoes[posicao][0], opcoes[posicao][1])) {
+
+      *xDestino = opcoes[posicao][0];
+      *yDestino = opcoes[posicao][1];
+
+      return 1;
+    }
+  }
+
+  return 0;
 }
 
 int acabou() {
